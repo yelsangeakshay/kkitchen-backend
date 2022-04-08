@@ -86,3 +86,19 @@ exports.getUserName=(req,res)=>{
     
 }
 
+exports.getProfile=(req,res)=>{
+    console.log("Request bidy")
+    let userid = req.query.id
+    console.log(req.query.id)
+    User.find({_id:userid}).exec((err,user)=>{
+        if(err || !user){
+            return res.status(400).json({
+                error: "Error fetching User Details"
+            });
+        }
+        else{
+                   
+            return res.send(user)
+        }
+    }) ;  
+}
