@@ -46,3 +46,13 @@ exports.menuId = (req, res, next, id) => {
         next();
     });
 };
+
+exports.getAllMenus=(req,res)=>{
+    Menu.find().exec((err,menu)=>{
+        if(err){
+            return res.status(400).json({error:"No Menu Uploaded"})
+        }
+        console.log(menu)
+        return res.send(menu)
+    });
+}
