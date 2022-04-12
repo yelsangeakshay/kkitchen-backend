@@ -48,11 +48,33 @@ exports.menuId = (req, res, next, id) => {
 };
 
 exports.getAllMenus=(req,res)=>{
-    Menu.find().exec((err,menu)=>{
-        if(err){
-            return res.status(400).json({error:"No Menu Uploaded"})
-        }
-        console.log(menu)
-        return res.send(menu)
-    });
+
+    Menu.aggregate([                
+        {
+            $lookup:{
+                from: "users",
+                localField:"userId",
+                foreignField:"_id",
+                as:"user_info",
+            },
+        },
+        // Deconstructs the array field from the
+  // input document to output a document
+  // for each element
+  {
+    $unwind: "$user_info",
+  },
+],function(err,data){
+    if(!err){
+        return  res.send(data)
+    }
+    console.log("DATA",data,err)
+})    
+    // Menu.find().exec((err,menu)=>{
+    //     if(err){
+    //         return res.status(400).json({error:"No Menu Uploaded"})
+    //     }
+    //     console.log(menu)
+    //     return res.send(menu)
+    // });
 }
