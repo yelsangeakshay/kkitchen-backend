@@ -1,8 +1,8 @@
 {
     "version": 2,
-    "name": "https://kkitchen-backend.vercel.app/",
+    "name": "kkitchen-backend.vercel.app",
     "builds": [
-      { "src": "script.js", "use": "@vercel/node" }
+      { "src": "app.js", "use": "@vercel/node" }
     ],
     "routes": [
       { "src": "/(.*)", "dest": "/app.js" }
