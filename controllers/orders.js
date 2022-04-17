@@ -4,6 +4,8 @@ const User  = require("../models/user")
 const {errorHandler} = require('../helper/dbErrHelper')
 const { userId } = require("./user")
 const { menuId } = require("./menu")
+const mongoose = require('mongoose');
+const {ObjectId} = mongoose.Schema
 exports.create = (req,res) =>{
     const order = new Order(req.body)
     console.log("Create Order",req.body)
@@ -17,7 +19,6 @@ exports.create = (req,res) =>{
 }
 
 exports.getOrderHistory =(req,res)=>{
-
     let userid = req.query.id   
         Order.aggregate([                
             {
@@ -42,10 +43,40 @@ exports.getOrderHistory =(req,res)=>{
     })    
 }
 
+exports.getOrderHistory1 =(req,res)=>{
+    let userid = req.query.id   
+    userid = mongoose.Types.ObjectId(userid)
+    console.log(userid)
+        Order.aggregate([
+            {$match: { userId:userid } },
+              {
+                $lookup:{
+                    from: "users",
+                    localField:"chefId",
+                    foreignField:"_id",
+                    as:"orders_info",
+                },
+            },
+            // Deconstructs the array field from the
+      // input document to output a document
+      // for each element
+      {
+        $unwind: "$orders_info",
+      },
+    ],function(err,data){
+        if(!err){
+            return  res.send(data)
+        }
+        console.log("DATA",data,err)
+    })    
+}
+
 exports.getChefCurentOrders=(req,res)=>{
-    let id = req.query.id  
+    let userid = req.query.id   
+    userid = mongoose.Types.ObjectId(userid)
+    console.log(userid)
     Order.aggregate([ 
-          
+        {$match: { chefId:userid } },
         {
             $lookup:{
                 from: "users",
@@ -66,19 +97,17 @@ exports.getChefCurentOrders=(req,res)=>{
     }
     console.log("DATA",data,err)
 })  
-    // Order.find({chefId:userid}).exec((err,orders)=>{
-    //     if(err){
-    //         return res.status(400).json({error:"No Menu Uploaded"})
-    //     }
-    //     console.log(orders)
-    //     return res.send(orders)
-    // })
+    
 }
 
 exports.getOrderHistoryChef =(req,res)=>{
 
     let userid = req.query.id   
-        Order.aggregate([                
+    userid = mongoose.Types.ObjectId(userid)
+    console.log(userid) 
+        Order.aggregate([  
+            
+            {$match: { chefId:userid } },
             {
                 $lookup:{
                     from: "users",
