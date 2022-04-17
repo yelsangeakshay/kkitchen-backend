@@ -102,3 +102,23 @@ exports.getProfile=(req,res)=>{
         }
     }) ;  
 }
+
+exports.update = (req, res) => {
+    console.log("Body",req.body)
+    let userid = req.query.id
+    User.findOneAndUpdate(
+        { _id: userid},
+        { $set: req.body },
+        { new: true },
+        (err, user) => {
+            if (err) {
+                return res.status(400).json({
+                    error: "You are not authorized to perform this action"
+                });
+            }
+            user.hashed_password = undefined;
+            user.salt = undefined;
+            res.json(user);
+        }
+    );
+};
