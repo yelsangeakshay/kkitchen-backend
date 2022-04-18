@@ -1,6 +1,7 @@
 const Menu  = require("../models/menu")
 const {errorHandler} = require('../helper/dbErrHelper')
 const { userId } = require("./user")
+var moment = require('moment');
 exports.create = (req,res) =>{
     const menu = new Menu(req.body)
     console.log("Request Body",req.body)
@@ -15,13 +16,27 @@ exports.create = (req,res) =>{
 
 exports.getmenu =(req,res)=>{
         let userid = req.query.userid
-       Menu.find({userId:userid}).exec((err,menu)=>{
-           if(err){
-               return res.status(400).json({error:"No Menu Uploaded"})
-           }
-           console.log(menu)
-           return res.send(menu)
-       });
+        var now = new Date();
+        var today = moment(now).format('YYYY-MM-DD');
+        Menu.find({
+            $and:[
+                {userId:userid},
+                {date:{$gte:today}}
+            ]
+        }).exec((err,menu)=>{
+            if(err){
+                return res.status(400).json({error:"No Menu Uploaded"})
+            }
+            console.log(menu)
+            return res.send(menu)
+        });
+    //    Menu.find({userId:userid}).exec((err,menu)=>{
+    //        if(err){
+    //            return res.status(400).json({error:"No Menu Uploaded"})
+    //        }
+    //        console.log(menu)
+    //        return res.send(menu)
+    //    });
 }
 
 exports.getdish =(req,res)=>{
@@ -48,7 +63,8 @@ exports.menuId = (req, res, next, id) => {
 };
 
 exports.getAllMenus=(req,res)=>{
-
+    var today = new Date().toString()
+    console.log(today)
     Menu.aggregate([                
         {
             $lookup:{
