@@ -63,9 +63,10 @@ exports.menuId = (req, res, next, id) => {
 };
 
 exports.getAllMenus=(req,res)=>{
-    var today = new Date().toString()
-    console.log(today)
-    Menu.aggregate([                
+    var now = new Date();
+    var today = moment(now).format('YYYY-MM-DD');
+    Menu.aggregate([ 
+        {$match:  {date:{$gte:today}}  },           
         {
             $lookup:{
                 from: "users",
