@@ -15,6 +15,7 @@ exports.create = (req,res) =>{
 }
 
 exports.getmenu =(req,res)=>{
+    //consoel.log("updated")
         let userid = req.query.userid
         var now = new Date();
         var today = moment(now).format('YYYY-MM-DD');
