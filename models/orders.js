@@ -33,6 +33,9 @@ const OrderSchema = new mongoose.Schema({
       },
      date:{
         type:Date
-    }},{timestamps:true})
+    },
+      time:{
+         type:String
+      }},{timestamps:true})
 
 module.exports = mongoose.model('Order',OrderSchema);
