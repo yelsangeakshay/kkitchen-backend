@@ -31,7 +31,11 @@ const MenuSchema = new mongoose.Schema({
      },
      price_delivery:{
         type:Number
-    }
+    },
+    photo:{
+        data:Buffer,
+        contentType:String       
+    },
 
 })
 
