@@ -5,6 +5,7 @@ const {errorHandler} = require('../helper/dbErrHelper')
 const { userId } = require("./user")
 const { menuId } = require("./menu")
 const mongoose = require('mongoose');
+var moment = require('moment');
 const {ObjectId} = mongoose.Schema
 exports.create = (req,res) =>{
     const order = new Order(req.body)
@@ -72,11 +73,18 @@ exports.getOrderHistory1 =(req,res)=>{
 }
 
 exports.getChefCurentOrders=(req,res)=>{
-    let userid = req.query.id   
-    userid = mongoose.Types.ObjectId(userid)
-    console.log(userid)
+    let id = req.query.id   
+    id = mongoose.Types.ObjectId(id)
+    var now = new Date();
+    var today = moment(now).format('YYYY-MM-DD');
+    console.log(id,today)
     Order.aggregate([ 
-        {$match: { chefId:userid } },
+        {$match: { 
+            $and:[
+                {chefId:id },
+                {date:{$gte:today}}              
+               
+            ] }},
         {
             $lookup:{
                 from: "users",
