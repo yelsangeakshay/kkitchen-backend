@@ -16,7 +16,6 @@ exports.userId = (req, res, next, id) => {
     });
 };
 
-
 exports.getChef = (req,res)=>{   
     Menu.find().exec((err,data)=>{
         if(err || !data){
@@ -122,3 +121,26 @@ exports.update = (req, res) => {
         }
     );
 };
+
+exports.getCustomerDetails=(req,res)=>{
+    console.log("In FUnction")
+     User.find({role:0},{_id:1,name:1,email:1,contactNumber:1,address:1}).exec((err,data)=>{
+        if(err || !data){
+            return res.status(400).json({error:"No Customer Available"})
+         }
+        else{
+            return res.send(data)
+        }
+    });
+}
+
+exports.getChefDetails=(req,res)=>{
+    User.find({role:1}).exec((err,data)=>{
+        if(err || !data){
+            return res.status(400).json({error:"No Chefs Available"})
+         }
+        else{
+            return res.send(data)
+        }
+    }); 
+}

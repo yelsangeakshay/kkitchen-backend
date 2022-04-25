@@ -17,6 +17,8 @@ const authRoutes = require('./routes/auth')
 const menuRoutes  = require('./routes/menu')
 const userRoutes  = require('./routes/user')
 const orderRoutes  = require('./routes/orders')
+const adminRoutes = require('./routes/admin')
+
 //DB CONNECTION
 mongoose.connect(process.env.MONGO_URI,
     {useNewUrlParser:true}).then(()=>console.log('DB CONNECTED'))
@@ -40,6 +42,7 @@ app.use('/api',authRoutes)
 app.use('/api',menuRoutes)
 app.use('/api',userRoutes)
 app.use('/api',orderRoutes)
+app.use('/api',adminRoutes)
 
 const port = process.env.PORT || 8000
 
