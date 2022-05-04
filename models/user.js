@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         trim:true,
         required:true,
-        unique:true
+        
     },
     userId:{
         type:String,
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
         type:Number,
         trim:true,
         required:true,
-        unique:true
+        
     },
     hashed_password:{
         type:String,

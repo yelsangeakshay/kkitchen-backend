@@ -134,7 +134,7 @@ exports.getOrderHistoryChef =(req,res)=>{
         if(!err){
             return  res.send(data)
         }
-        console.log("DATA",data,err)
+        console.log("DA",data,err)
     })    
 }
 
