@@ -122,6 +122,7 @@ exports.menuId = (req, res, next, id) => {
 exports.getAllMenus=(req,res)=>{
     var now = new Date();
     var today = moment(now).format('YYYY-MM-DD');
+    console.log(today)
     Menu.aggregate([ 
         {$match:  {date:{$gte:today}}  },           
         {
