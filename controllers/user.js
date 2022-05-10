@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const Menu = require('../models/menu')
+const Order  = require("../models/orders")
 
 
 
@@ -143,4 +144,43 @@ exports.getChefDetails=(req,res)=>{
             return res.send(data)
         }
     }); 
+}
+
+exports.getChefReport=(req,res)=>{
+    console.log("Chef report")
+    Order.aggregate([
+        {$group:{
+            _id:"$chefId",sum:{
+                $sum:"$price"
+            }
+        }},
+        {
+            $lookup:{
+                from: "users",
+                localField:"_id",
+                foreignField:"_id",
+                as:"chef_info",
+            },
+        },
+        // Deconstructs the array field from the
+  // input document to output a document
+  // for each element
+  {
+    $unwind: "$chef_info",
+  },
+
+],function(err,data){
+    if(!err){
+        return  res.send(data)
+    }
+    console.log("DATA",data,err)
+})  
+    // User.aggregate({role:1}).exec((err,data)=>{
+    //     if(err || !data){
+    //         return res.status(400).json({error:"No Chefs Available"})
+    //      }
+    //     else{
+    //         return res.send(data)
+    //     }
+    // }); 
 }
