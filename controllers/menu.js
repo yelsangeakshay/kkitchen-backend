@@ -145,11 +145,70 @@ exports.getAllMenus=(req,res)=>{
     }
     //console.log("DATA",data,err)
 })    
-    // Menu.find().exec((err,menu)=>{
-    //     if(err){
-    //         return res.status(400).json({error:"No Menu Uploaded"})
-    //     }
-    //     console.log(menu)
-    //     return res.send(menu)
-    // });
+    
+}
+
+exports.getAllMenus1=(req,res)=>{
+    var now = new Date();
+    var today = moment(now).format('YYYY-MM-DD');
+    
+    latitude = req.query.lat
+    longitude = req.query.lng
+    console.log(latitude,longitude)
+
+   
+    Menu.aggregate([ 
+        {$match:  {date:{$gte:today}}  },           
+        {
+            $lookup:{
+                from: "users",
+                localField:"userId",
+                foreignField:"_id",
+                as:"user_info",
+            },
+        },
+        // Deconstructs the array field from the
+  // input document to output a document
+  // for each element
+  {
+    $unwind: "$user_info",
+  },
+],function(err,data){
+    if(!err){
+        const response =[]
+        data.map((chefUser,i)=>{
+            var dist = calcCrow(chefUser.user_info.latitude, chefUser.user_info.longitude, latitude, longitude).toFixed(1);
+            if (dist <= 2) {
+               response.push(chefUser)
+                //  
+            }
+        })
+        return  res.send(response)
+    }
+    //console.log("DATA",data,err)
+})    
+    
+}
+
+
+
+const calcCrow=(lat1, lon1, lat2, lon2)=>
+{
+  var R = 6371; // km
+  var dLat = toRad(lat2-lat1);
+  var dLon = toRad(lon2-lon1);
+  var lat1 = toRad(lat1);
+  var lat2 = toRad(lat2);
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c;
+  return d;
+}
+
+// Converts numeric degrees to radians
+const toRad=(Value)=> 
+{
+    return Value * Math.PI / 180;
 }
